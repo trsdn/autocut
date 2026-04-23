@@ -1,0 +1,9 @@
+{
+  "llm": {
+    "base_url":    "https://api.openai.com/v1",
+    "api_key":     "sk-…",
+    "model":       "gpt-5.4-mini",
+    "max_tokens":  16384,
+    "temperature": 0.1
+  }
+}

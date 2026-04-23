@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+
+# autocut workspaces (content ignored via per-folder .gitignore)
+# input/ and output/ folders are tracked, their contents are not.
+
+# Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Local config (may contain API keys)
+autocut.config.json
+config.json

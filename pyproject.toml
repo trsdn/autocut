@@ -1,0 +1,60 @@
+[project]
+name = "autocut"
+version = "0.1.0"
+description = "Automated video re-cut: transcribe → detect silences/fillers → cut → clean audio → render"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Torsten", email = "trsdn@users.noreply.github.com" }]
+license = { text = "MIT" }
+keywords = [
+    "video", "editing", "transcription", "asr", "parakeet",
+    "whisper", "ffmpeg", "silence-detection", "loudnorm",
+    "filler-removal", "llm", "openai-compatible",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Multimedia :: Sound/Audio :: Editors",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+
+# Intentionally zero runtime python dependencies: stdlib only.
+# External tools (ffmpeg, fluidaudiocli) are detected/bootstrapped at runtime.
+dependencies = []
+
+[project.urls]
+Homepage      = "https://github.com/trsdn/autocut"
+Repository    = "https://github.com/trsdn/autocut"
+Issues        = "https://github.com/trsdn/autocut/issues"
+Changelog     = "https://github.com/trsdn/autocut/blob/main/CHANGELOG.md"
+
+[project.scripts]
+autocut = "autocut.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest"]
+# Cross-platform Parakeet backend (Windows/Linux with CUDA or CPU).
+# Heavy: pulls torch + nemo_toolkit. Only install if you cannot use FluidAudio.
+nemo = [
+    "nemo_toolkit[asr]>=2.0",
+    "soundfile>=0.12",
+    "numpy",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/autocut"]
