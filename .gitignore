@@ -17,3 +17,6 @@ dist/
 # Local config (may contain API keys)
 autocut.config.json
 config.json
+
+# MDViewerPlus preview artifacts
+.mdviewerplus-preview.html
