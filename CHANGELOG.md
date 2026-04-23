@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-04-23
+
+### Changed
+- **LLM redundancy detection is now materially more aggressive.** The system
+  prompt explicitly targets 15–25 % runtime reduction and enumerates the cut
+  patterns (restatements, meta-narration, self-corrections, empty connective
+  tissue, weak summaries) instead of a vague "focus on redundancy".
+- Transcript is now sent to the LLM as sentences with a leading timestamp per
+  line (break on sentence punctuation or ~140 chars) rather than one word per
+  line. The model sees coherent clauses and produces longer, better-aligned
+  cut ranges.
+- Keyless local endpoints (llama.cpp, LM Studio, Ollama, internal gateways)
+  are now fully supported: `is_configured()` accepts any non-default
+  `base_url`, and the `Authorization` header is omitted when no API key is
+  set.
+
+### Measured impact
+On a 12:14 German/English screen-demo (Parakeet-TDT v3, `gpt-5.4-mini` on a
+local OpenAI-compatible endpoint) the LLM alone now removes ~137 s of semantic
+redundancy (up from ~85 s), and the final cut shrinks from **7:48 → 6:13**
+with default `talk` preset pauses.
+
 ## [0.1.0] - 2026-04-23
 
 ### Added
@@ -22,4 +44,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Caching: WAV, transcript, and cut plan persisted under `output/<stem>/.work/` for fast re-runs.
 - Zero Python runtime dependencies (stdlib only).
 
+[0.2.0]: https://github.com/trsdn/autocut/releases/tag/v0.2.0
 [0.1.0]: https://github.com/trsdn/autocut/releases/tag/v0.1.0
