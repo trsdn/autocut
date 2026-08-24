@@ -1,5 +1,8 @@
 [project]
-name = "autocut"
+# PyPI distribution name. The plain `autocut` name is taken on PyPI by an
+# unrelated project, so the distribution ships as `trsdn-autocut`.
+# The import package and the console command both remain `autocut`.
+name = "trsdn-autocut"
 version = "0.2.0"
 description = "Automated video re-cut: transcribe → detect silences/fillers → cut → clean audio → render"
 readme = "README.md"
@@ -58,3 +61,13 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/autocut"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/autocut",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "config.example.json",
+    "pyproject.toml",
+]

@@ -34,7 +34,7 @@ Manual editing is tedious; AI "magic editors" are opaque black boxes.
 - **Local-first** — Parakeet ASR runs on your machine (CoreML on macOS,
   CUDA/CPU elsewhere). An LLM pass is **optional** and works with any
   OpenAI-compatible endpoint, including Ollama, LM Studio, or your own gateway.
-- **Zero lock-in** — MIT, zero Python runtime deps. `pip install -e .` and go.
+- **Zero lock-in** — MIT, zero Python runtime deps. `pip install trsdn-autocut` and go.
 
 ## Use cases
 
@@ -51,6 +51,21 @@ Manual editing is tedious; AI "magic editors" are opaque black boxes.
 ## Install
 
 ```bash
+pip install trsdn-autocut       # or: uv tool install trsdn-autocut
+autocut --help
+
+# no install at all:
+uvx --from trsdn-autocut autocut talk.mp4
+```
+
+> **Why two names?** The PyPI distribution name is **`trsdn-autocut`** because
+> the plain `autocut` name on PyPI belongs to an unrelated project. The command
+> you run and the Python import package are still **`autocut`** — only the
+> `pip install` name differs.
+
+From source:
+
+```bash
 git clone https://github.com/trsdn/autocut.git
 cd autocut
 pip install -e .       # or: uv pip install -e .
@@ -65,7 +80,7 @@ The FluidAudio Parakeet CLI auto-builds on first run.
 |----------------------|--------------------------------------|--------------------------------------------------|
 | `ffmpeg` / `ffprobe` | required — audio/video pipeline      | `brew install ffmpeg` · `apt install ffmpeg`     |
 | FluidAudio CLI       | ASR, macOS (CoreML), ~150× realtime  | auto-built into `~/.cache/autocut/` on first run |
-| NeMo Parakeet        | ASR, Windows / Linux / macOS         | `pip install 'autocut[nemo]'`                    |
+| NeMo Parakeet        | ASR, Windows / Linux / macOS         | `pip install 'trsdn-autocut[nemo]'`              |
 | `whisper.cpp`        | ASR, portable minimal-deps fallback  | `brew install whisper-cpp`                       |
 
 Parakeet-TDT v3 is the same multilingual model across all three backends.
@@ -112,7 +127,7 @@ autocut talk.mp4 --llm
 autocut kickoff.mp4 --preset meeting
 
 # Cross-platform (Windows / Linux)
-pip install 'autocut[nemo]'
+pip install 'trsdn-autocut[nemo]'
 autocut talk.mp4 --asr-backend nemo
 ```
 
@@ -229,7 +244,7 @@ Run `autocut --help` for the full list with descriptions.
 - **macOS** *(recommended)* — FluidAudio Parakeet-TDT runs on CoreML at
   ~150× realtime. First run builds the CLI (~1 min) and downloads the model
   (~600 MB).
-- **Windows / Linux** — `pip install 'autocut[nemo]'`, then
+- **Windows / Linux** — `pip install 'trsdn-autocut[nemo]'`, then
   `--asr-backend nemo`. Parakeet-TDT v3 via NeMo with chunked (30 s)
   inference; uses CUDA if available, falls back to CPU. First run downloads
   the model (~2.5 GB).
