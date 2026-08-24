@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-08-24
+
+### Fixed
+- `autocut --version` reported a stale hardcoded number. `__version__` is now
+  read from the installed package metadata, so it always matches the released
+  distribution version.
+
 ## [0.2.1] - 2026-08-24
 
 ### Changed
@@ -60,6 +67,7 @@ with default `talk` preset pauses.
 - Caching: WAV, transcript, and cut plan persisted under `output/<stem>/.work/` for fast re-runs.
 - Zero Python runtime dependencies (stdlib only).
 
+[0.2.2]: https://github.com/trsdn/autocut/releases/tag/v0.2.2
 [0.2.1]: https://github.com/trsdn/autocut/releases/tag/v0.2.1
 [0.2.0]: https://github.com/trsdn/autocut/releases/tag/v0.2.0
 [0.1.0]: https://github.com/trsdn/autocut/releases/tag/v0.1.0

@@ -3,7 +3,7 @@
 # unrelated project, so the distribution ships as `trsdn-autocut`.
 # The import package and the console command both remain `autocut`.
 name = "trsdn-autocut"
-version = "0.2.1"
+version = "0.2.2"
 description = "Automated video re-cut: transcribe → detect silences/fillers → cut → clean audio → render"
 readme = "README.md"
 requires-python = ">=3.10"
