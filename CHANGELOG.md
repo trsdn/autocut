@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-08-24
+
+### Changed
+- **PyPI distribution name is now `trsdn-autocut`.** The plain `autocut` name on
+  PyPI belongs to an unrelated project. The import package and the console
+  command are unchanged — you still run `autocut` and `import autocut`; only
+  `pip install trsdn-autocut` differs.
+
+### Added
+- Release workflow (`.github/workflows/release.yml`) publishing to PyPI via
+  Trusted Publishing (GitHub Actions OIDC, no API tokens). Pushing a `v*` tag
+  builds sdist + wheel, gates on `twine check --strict`, and publishes from the
+  `pypi` environment.
+- Explicit sdist file list so workspace folders and local config never end up in
+  the published artifact.
+
 ## [0.2.0] - 2026-04-23
 
 ### Changed
@@ -44,5 +60,6 @@ with default `talk` preset pauses.
 - Caching: WAV, transcript, and cut plan persisted under `output/<stem>/.work/` for fast re-runs.
 - Zero Python runtime dependencies (stdlib only).
 
+[0.2.1]: https://github.com/trsdn/autocut/releases/tag/v0.2.1
 [0.2.0]: https://github.com/trsdn/autocut/releases/tag/v0.2.0
 [0.1.0]: https://github.com/trsdn/autocut/releases/tag/v0.1.0
