@@ -1,5 +1,6 @@
 # autocut
 
+[![PyPI](https://img.shields.io/pypi/v/trsdn-autocut?label=pypi%20trsdn-autocut)](https://pypi.org/project/trsdn-autocut/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#platform-notes)
@@ -276,6 +277,28 @@ Issues and PRs welcome. This started as a tool to shorten a 12-minute
 negotiation demo; it generalised from there. If you hit an edge case —
 unusual language, weird microphone, exotic codec — open an issue with the
 source clip (or a redacted transcript) and I'll take a look.
+
+### Releasing
+
+Releases are published to PyPI automatically by
+[`.github/workflows/release.yml`](.github/workflows/release.yml) using
+[Trusted Publishing](https://docs.pypi.org/trusted-publishers/) — GitHub Actions
+OIDC, no API tokens or repository secrets.
+
+1. Bump `version` in `pyproject.toml` and add a `CHANGELOG.md` entry.
+2. Commit to `main`.
+3. Tag and push:
+
+   ```bash
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   ```
+
+The workflow builds sdist + wheel, gates on `twine check --strict`, and
+publishes from the `pypi` environment. `__version__` is read from the installed
+package metadata, so it follows `pyproject.toml` automatically.
+
+Tag and `version` must match, and a version can only ever be uploaded to PyPI
+once — bump again rather than trying to replace a published release.
 
 ## License
 
