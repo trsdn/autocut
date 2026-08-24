@@ -46,6 +46,10 @@ jobs:
     name: Publish to PyPI
     needs: build
     runs-on: ubuntu-latest
+    # Only a tag push publishes. A manual workflow_dispatch run stops after
+    # `build`, which makes it a safe dry run: PyPI rejects re-uploading a
+    # version that already exists.
+    if: startsWith(github.ref, 'refs/tags/')
     environment: pypi
     permissions:
       id-token: write
