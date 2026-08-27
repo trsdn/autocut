@@ -4,7 +4,6 @@ import os
 import platform
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 CACHE_DIR = Path(os.environ.get("AUTOCUT_CACHE",
