@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  # The workflows in .github/workflows pin actions by major tag; keep them current.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci"
+    labels:
+      - dependencies
+
+  # There are deliberately zero runtime dependencies, so this only tracks the
+  # `dev` and `nemo` optional-dependency groups in pyproject.toml.
+  # If that ever starts producing runtime-dependency PRs, something has gone
+  # wrong with the stdlib-only rule — see AGENTS.md.
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "build"
+    labels:
+      - dependencies
