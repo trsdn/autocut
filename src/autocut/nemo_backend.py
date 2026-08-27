@@ -35,7 +35,6 @@ def transcribe_nemo(audio_wav: Path, out_json: Path,
                     model_name: str = DEFAULT_MODEL,
                     log=print) -> dict:
     _import_nemo()
-    import numpy as np
     import soundfile as sf
     from nemo.collections.asr.models import ASRModel
 
