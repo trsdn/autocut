@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import unavailable
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = REPO_ROOT / ".github" / "scripts" / "release_notes.py"
 
@@ -293,7 +295,13 @@ def test_every_released_version_in_the_real_changelog_yields_notes():
 
 
 def test_every_published_git_tag_has_notes_in_the_real_changelog():
-    """A tag without notes would fail the release; catch it at test time."""
+    """A tag without notes would fail the release; catch it at test time.
+
+    This derives its work list from repository state, so it can only be as
+    complete as the checkout. An empty tag list therefore means "I could not
+    check", not "there is nothing to check" — which is why on CI that is a
+    failure rather than a skip.
+    """
     changelog = (REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     versions = set(real_changelog_versions(changelog))
 
@@ -302,13 +310,29 @@ def test_every_published_git_tag_has_notes_in_the_real_changelog():
         capture_output=True, text=True, cwd=str(REPO_ROOT),
     )
     if tags.returncode != 0 or not tags.stdout.strip():
-        pytest.skip("no git tags available")
+        unavailable(
+            "no git tags available, so no published version could be checked",
+            ci_remedy=(
+                "the `test` job in .github/workflows/ci.yml must check out with "
+                "`fetch-tags: true` — actions/checkout makes a depth-1 clone "
+                "with no tags, which leaves this guard with nothing to inspect."
+            ),
+        )
 
-    missing = [
+    missing = sorted(
         tag for tag in tags.stdout.split()
         if release_notes.normalise(tag) not in versions
-    ]
-    assert missing == [], f"tagged versions with no CHANGELOG section: {missing}"
+    )
+    assert missing == [], (
+        f"published versions with no CHANGELOG.md section: {', '.join(missing)}\n\n"
+        "This blocks every pull request, not just a release, and that is "
+        "deliberate: the same rule gates the release workflow (job `verify` in "
+        ".github/workflows/release.yml). A tag in this state means the version "
+        "was published with no release notes, and any new release would fail.\n\n"
+        "Fix: add a `## [<version>]` section to CHANGELOG.md for each version "
+        "listed above. Writing the notes retroactively is the intended remedy — "
+        "deleting this test would restore the silence it exists to break."
+    )
 
 
 def test_the_version_being_released_next_already_has_usable_notes():

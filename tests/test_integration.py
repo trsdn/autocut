@@ -5,7 +5,9 @@ parsing, duration probing and cut-plan construction. ASR is bypassed with
 ``--transcript`` (a supplied word-timings file) and rendering with ``--dry-run``,
 so the test stays fast and needs no models.
 
-Skipped automatically when ffmpeg/ffprobe are not installed.
+Skipped when ffmpeg/ffprobe are missing locally — but failed on CI, where the
+workflow installs them and their absence means the workflow is broken rather
+than the machine being unequipped.
 """
 from __future__ import annotations
 
@@ -14,16 +16,26 @@ import shutil
 import subprocess
 
 import pytest
+from conftest import unavailable
 
 from autocut.cli import main
 
-pytestmark = pytest.mark.skipif(
-    shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None,
-    reason="ffmpeg/ffprobe not installed",
-)
-
 DURATION = 6.0
 SILENCE_START, SILENCE_END = 2.0, 4.0
+
+
+@pytest.fixture(scope="module", autouse=True)
+def require_ffmpeg():
+    """Gate the module without letting a missing binary pass for a green run."""
+    if shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None:
+        unavailable(
+            "ffmpeg/ffprobe not installed, so the end-to-end pipeline was never run",
+            ci_remedy=(
+                "the `test` job in .github/workflows/ci.yml must keep its "
+                "`Install ffmpeg` step — without it this whole module sits out "
+                "and CI still reports success."
+            ),
+        )
 
 
 @pytest.fixture(scope="module")
