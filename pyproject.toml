@@ -46,7 +46,12 @@ Changelog     = "https://github.com/trsdn/autocut/blob/main/CHANGELOG.md"
 autocut = "autocut.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.6",
+    "mypy>=1.8",
+    "tomli>=2.0; python_version<'3.11'",
+]
 # Cross-platform Parakeet backend (Windows/Linux with CUDA or CPU).
 # Heavy: pulls torch + nemo_toolkit. Only install if you cannot use FluidAudio.
 nemo = [
@@ -71,3 +76,27 @@ include = [
     "config.example.json",
     "pyproject.toml",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers --strict-config"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Deliberately defect-focused rather than style-focused: the source uses
+# column-aligned assignments and compact `if cond: stmt` lines on purpose, and
+# reformatting them would churn the whole tree for no correctness gain.
+select = ["E4", "E7", "E9", "F", "B"]
+ignore = [
+    "E701",  # multiple statements on one line (colon) — house style
+    "E702",  # multiple statements on one line (semicolon) — house style
+]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src/autocut"]
+ignore_missing_imports = true
