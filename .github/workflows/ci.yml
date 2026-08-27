@@ -51,6 +51,12 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The release-notes guard checks that every published tag has a
+          # CHANGELOG section. A default checkout is a depth-1 clone with no
+          # tags, so without this the test would silently skip on CI — which
+          # is precisely where it needs to run.
+          fetch-tags: true
 
       - uses: actions/setup-python@v7
         with:
