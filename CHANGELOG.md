@@ -8,12 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Tag-triggered GitHub Releases.** `release.yml` now creates a GitHub Release
+  for every version tag, with notes taken from the matching `CHANGELOG.md`
+  section. The job holds the only `contents: write` in the workflow, scoped to
+  itself, and runs after a successful publish so a release can never point at a
+  version that is not on PyPI.
+- **Release guards that run before anything is published.** A new `verify` job
+  fails the run when the tag disagrees with `pyproject.toml`, or when the
+  version has no changelog section or an empty one. PyPI version numbers can
+  only be used once, so these checks deliberately run ahead of the upload
+  rather than after it.
+- `.github/scripts/release_notes.py` — extracts a single version's notes from
+  `CHANGELOG.md`. Stdlib only, and outside `src/` so it never ships in the
+  wheel. Covered by `tests/test_release_notes.py`, including the missing-section
+  and empty-section failure paths and a check that every published git tag has
+  notes.
 - Continuous integration (`.github/workflows/ci.yml`): ruff, mypy and the test
   suite on Python 3.10–3.13 for every push and pull request, plus a packaging
   job that builds the sdist/wheel, gates on `twine check --strict`, and installs
   the built wheel into a clean virtualenv. CI never publishes anything —
   releasing stays entirely in `release.yml`.
-- Test suite under `tests/` (pytest, 171 tests) covering the cut-plan builder,
+- Test suite under `tests/` (pytest) covering the cut-plan builder,
   silence snapping and `silencedetect` parsing, LLM config precedence and
   response parsing, the whisper.cpp transcript normaliser, the ffmpeg filter
   graph, and external-tool discovery — plus an end-to-end test that drives the

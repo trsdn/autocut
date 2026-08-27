@@ -168,16 +168,39 @@ publishing path.
 
 `.github/workflows/release.yml` publishes to PyPI via Trusted Publishing
 (GitHub Actions OIDC, `id-token: write`, `pypa/gh-action-pypi-publish`). There
-is no `PYPI_API_TOKEN` and there must never be one.
+is no `PYPI_API_TOKEN` and there must never be one. The file must stay at that
+exact path — pypi.org registers the workflow filename as the trusted publisher.
 
 To release: bump `version` in `pyproject.toml`, add a `CHANGELOG.md` section,
 commit to `main`, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
+
+The job graph is `verify` → `build` → `publish` → `github-release`:
+
+- **`verify` runs first and gates everything**, because a PyPI upload is
+  permanent. It fails the run if the tag disagrees with `pyproject.toml`, or if
+  `CHANGELOG.md` has no section for the version or that section is empty. Adding
+  a check that must happen before publishing belongs here, not in a later job.
+- **`github-release`** creates the GitHub Release from the tag, with notes
+  extracted by `.github/scripts/release_notes.py`. It holds the only
+  `contents: write` in the workflow, scoped to that job alone — do not widen the
+  workflow-level `permissions` block to grant it.
+
+`.github/scripts/release_notes.py` is stdlib-only like everything else, and
+lives outside `src/` so release tooling never ships in the wheel.
+`tests/test_release_notes.py` loads it by path and covers the failure paths.
+
+Other things to know:
 
 - The distribution is named **`trsdn-autocut`**, not `autocut` — the plain name
   on PyPI belongs to an unrelated project. The import package and console
   command are still `autocut`.
 - `__version__` is read from installed metadata, so it follows `pyproject.toml`
-  automatically. A test asserts they agree.
+  automatically. A test asserts they agree, and a second test asserts the
+  current version has changelog notes — the same rule `verify` enforces at
+  release time.
 - A version can only be uploaded to PyPI once. Bump again rather than trying to
   replace a published release.
-- Agents must never run `twine upload` or otherwise publish by hand.
+- A `workflow_dispatch` run is a safe dry run: it verifies and builds, then
+  stops before `publish`.
+- Agents must never run `twine upload`, push a tag, or otherwise publish by
+  hand.

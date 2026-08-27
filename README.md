@@ -293,12 +293,22 @@ OIDC, no API tokens or repository secrets.
    git tag vX.Y.Z && git push origin vX.Y.Z
    ```
 
-The workflow builds sdist + wheel, gates on `twine check --strict`, and
-publishes from the `pypi` environment. `__version__` is read from the installed
-package metadata, so it follows `pyproject.toml` automatically.
+The workflow then, in order:
 
-Tag and `version` must match, and a version can only ever be uploaded to PyPI
-once — bump again rather than trying to replace a published release.
+1. **Verifies** the tag matches `pyproject.toml` and that `CHANGELOG.md` has a
+   non-empty section for it. Both run *before* anything is uploaded, because a
+   PyPI version number can only ever be used once.
+2. Builds sdist + wheel and gates on `twine check --strict`.
+3. Publishes to PyPI from the `pypi` environment.
+4. Creates a **GitHub Release** for the tag, with notes taken from the matching
+   `CHANGELOG.md` section.
+
+`__version__` is read from the installed package metadata, so it follows
+`pyproject.toml` automatically.
+
+Step 1 is why a release cannot ship with blank or invented notes: if the tag has
+no changelog entry, the run fails before reaching PyPI. A `workflow_dispatch`
+run is a safe dry run — it verifies and builds, then stops without publishing.
 
 ## License
 
