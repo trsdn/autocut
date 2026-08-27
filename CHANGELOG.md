@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Continuous integration (`.github/workflows/ci.yml`): ruff, mypy and the test
+  suite on Python 3.10–3.13 for every push and pull request, plus a packaging
+  job that builds the sdist/wheel, gates on `twine check --strict`, and installs
+  the built wheel into a clean virtualenv. CI never publishes anything —
+  releasing stays entirely in `release.yml`.
+- Test suite under `tests/` (pytest, 171 tests) covering the cut-plan builder,
+  silence snapping and `silencedetect` parsing, LLM config precedence and
+  response parsing, the whisper.cpp transcript normaliser, the ffmpeg filter
+  graph, and external-tool discovery — plus an end-to-end test that drives the
+  real ffmpeg binary and skips itself when ffmpeg is absent.
+- Packaging guard tests that fail if `pyproject.toml`, `autocut.__version__` and
+  `CHANGELOG.md` disagree, if a runtime dependency is ever added, if a module
+  gains a third-party import at module level, or if the CI matrix stops matching
+  the advertised Python classifiers.
+- `AGENTS.md` documenting the verified build/test/lint commands, the pipeline
+  architecture and the stdlib-only constraint.
+- Dependabot (`.github/dependabot.yml`): weekly updates for GitHub Actions and
+  for the `dev` / `nemo` optional dependency groups.
+- Ruff, mypy and pytest configuration in `pyproject.toml`; `ruff` and `mypy`
+  added to the `dev` extra.
+
+### Fixed
+- Removed two dead imports (`sys` in `deps.py`, `numpy` in `nemo_backend.py`).
+- `CHANGELOG.md` had no entry for 0.2.3, which is tagged and published on PyPI.
+- `.gitignore` only covered `.venv/`, so a differently named local virtualenv
+  could be swept into the built sdist.
+
+## [0.2.3] - 2026-08-24
+
+### Added
+- PyPI version badge in the README.
+- README section documenting the release process (bump, changelog, tag, push)
+  and the Trusted Publishing setup behind it.
+
 ## [0.2.2] - 2026-08-24
 
 ### Fixed
@@ -67,6 +104,8 @@ with default `talk` preset pauses.
 - Caching: WAV, transcript, and cut plan persisted under `output/<stem>/.work/` for fast re-runs.
 - Zero Python runtime dependencies (stdlib only).
 
+[Unreleased]: https://github.com/trsdn/autocut/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/trsdn/autocut/releases/tag/v0.2.3
 [0.2.2]: https://github.com/trsdn/autocut/releases/tag/v0.2.2
 [0.2.1]: https://github.com/trsdn/autocut/releases/tag/v0.2.1
 [0.2.0]: https://github.com/trsdn/autocut/releases/tag/v0.2.0
