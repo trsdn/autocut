@@ -3,8 +3,13 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
+venv/
+.venv*/
 build/
 dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # autocut workspaces (content ignored via per-folder .gitignore)
 # input/ and output/ folders are tracked, their contents are not.
